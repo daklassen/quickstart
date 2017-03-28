@@ -1,23 +1,11 @@
 import {Component} from '@angular/core';
+import {PostsService} from '../services/posts.service';
 
 @Component({
+  moduleId: module.id,
   selector: 'user',
-  template: `<h1>
-    Hello {{name}}</h1>
-  <p><strong>Email</strong>: {{email}}</p>
-  <p><strong>Adress:</strong> {{address.street}} {{address.city}} {{address.state}}</p>
-
-  <button (click)="toggleHobbies()">{{showHoobies ? 'Hide':'Show'}} Hobbies</button>
-
-  <div *ngIf="showHoobies">
-    <h3>Hobbies</h3>
-    <ul>
-      <li *ngFor="let hobby of hobbies">
-        {{hobby}}
-      </li>
-    </ul>
-  </div>
-  `,
+  templateUrl: 'user.component.html',
+  providers: [PostsService]
 })
 export class UserComponent {
   name: string;
@@ -25,8 +13,9 @@ export class UserComponent {
   address: Address;
   hobbies: string[];
   showHoobies: boolean;
+  posts: Post[];
 
-  constructor() {
+  constructor(private postsService: PostsService) {
     this.name = 'David';
     this.email = 'john@email.com';
     this.address = {
@@ -36,6 +25,10 @@ export class UserComponent {
     };
     this.hobbies = ['Music', 'Movies', 'Sports'];
     this.showHoobies = true;
+
+    this.postsService.getPosts().subscribe(posts => {
+      this.posts = posts;
+    });
   }
 
   toggleHobbies() {
@@ -47,4 +40,10 @@ interface Address {
   street: string;
   city: string;
   state: string;
+}
+
+interface Post {
+  id: number;
+  title: string;
+  body: string;
 }
